@@ -48,11 +48,13 @@
 - name: add env_vars for project user
   template: src=env_vars.j2 dest=/home/{{ user }}/env_vars mode=640
   become_user: "{{ user }}"
+  become: yes
 
 # python installation
 - name: checkout project directories
-  git: repo={{ git_repository }} dest=/home/{{ user }}/src/{{directory}} accept_hostkey=yes version=master
+  git: repo={{ git_repository }} dest=/home/{{ user }}/src/{{ directory }} accept_hostkey=yes version=master
   become_user: "{{ user }}"
+  become: yes
   notify:
     - restart django-application
   register: gitresult
@@ -66,14 +68,17 @@
 - name: create virtualenv
   command: virtualenv -p python3.7 {{ venv_dir }}
   become_user: "{{ user }}"
+  become: yes
   notify:
     - restart django-application
 - name: add checkouts to python path
   lineinfile: dest={{ venv_dir }}/lib/python3.7/site-packages/checkouts.pth create=yes state=present line=/home/{{ user }}/src/{{ directory }}
   become_user: "{{ user }}"
+  become: yes
 - name: install pipenv
   pip: name=pipenv virtualenv={{ venv_dir }}
   become_user: "{{ user }}"
+  become: yes
 - name: install Pipfile.lock
   command: "{{ venv_dir }}/bin/pipenv install"  # --deploy
   args:
@@ -81,6 +86,7 @@
   environment:
     VIRTUAL_ENV: "{{ venv_dir }}"
   become_user: "{{ user }}"
+  become: yes
 - name: link virtualenv
   file: src={{ venv_dir }} dest=/home/{{ user }}/virt state=link
   notify:

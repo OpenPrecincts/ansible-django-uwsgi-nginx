@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: django-uwsgi-nginx
   author: James Turk
   description: basic Python nginx/uwsgi base role
 

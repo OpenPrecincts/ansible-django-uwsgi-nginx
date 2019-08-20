@@ -75,12 +75,12 @@
   lineinfile: dest={{ venv_dir }}/lib/python3.7/site-packages/checkouts.pth create=yes state=present line=/home/{{ user }}/src/{{ directory }}
   become_user: "{{ user }}"
   become: yes
-- name: install pipenv
-  pip: name=pipenv virtualenv={{ venv_dir }}
+- name: install poetry
+  pip: name=poetry virtualenv={{ venv_dir }}
   become_user: "{{ user }}"
   become: yes
-- name: install Pipfile.lock
-  command: "{{ venv_dir }}/bin/pipenv install"  # --deploy
+- name: install packages
+  command: "{{ venv_dir }}/bin/poetry install"  # --deploy
   args:
     chdir: /home/{{ user }}/src/{{ directory }}
   environment:
